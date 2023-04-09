@@ -61,6 +61,26 @@ app.post('/register', async (req, res) => {
     */
 });
 
+app.post('/login', (req, res) => {
+
+    // 1. 요청된 이메일을 DB에서 찾는다.
+    User.findOne({ email: req.body.email }, (err, user) => {
+        if (!user) {
+            return res.json({
+                loginSuccess: false,
+                message: '가입된 이메일이 아니거나, 오타가 발생했습니다. 다시 입력해주세요.'
+            });
+        }
+        // 2. 요청된 이메일이 DB에 있다면 pwd가 일치하는지도 확인
+        user.comparePassword(req.body.password, (err, isMatch) => {
+            if (!isMatch) return res.json({ loginSuccess: false, message: '비밀번호가 틀렸습니다.' });
+        });
+    });
+
+
+    // 3. pwd가 일치한다면 토큰 생성
+});
+
 app.listen(port, () => {
     console.log(`running in port ${port}`);
 });
