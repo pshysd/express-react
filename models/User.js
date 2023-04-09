@@ -2,6 +2,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
+
 
 const userSchema = mongoose.Schema({
     name: {
@@ -65,6 +67,42 @@ userSchema.methods.comparePassword = function (plainPassword, callback) {
     });
 };
 
+userSchema.methods.generateToken = function (callback) {
+
+    const user = this;
+
+    // jwt를 이용해서 token 생성
+    const token = jwt.sign(user._id.toHexString(), 's1e2c3r4e5t6T7o8k9e0n1');
+
+    // user._id + 's1e2c3r4e5t6T7o8k9e0n1' = token
+
+    user.token = token;
+    user.save()
+        .then(() => {
+            callback(null, user);
+        })
+        .catch((err) => {
+            return callback(err);
+        });
+};
+
+userSchema.statics.findByToken = function (token, callback) {
+    const user = this;
+
+    // 토큰을 decode한다.
+    jwt.verify(token, 's1e2c3r4e5t6T7o8k9e0n1', function (err, decoded) {
+        // 유저 아이디를 이용해서 유저를 찾은 다음에
+        // 클라이언트에서 가져온 token과 비교하여 DB에 보관된 토큰이 일치하는지 확인한다.
+
+        user.findOne({ '_id': decoded, 'token': token })
+            .then(() => {
+                callback(null, user);
+            })
+            .catch((err) => {
+                return callback(err);
+            });
+    });
+};
 const User = mongoose.model('User', userSchema);
 
 module.exports = { User };
