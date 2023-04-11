@@ -3,9 +3,9 @@ const app = express();
 const port = 3000;
 const mongoose = require('mongoose');
 const { User } = require('./models/User');
-const config = require('./config/key');
+const config = require('./server/config/key');
 const cookieParser = require('cookie-parser');
-const { auth } = require('./middleware/auth');
+const { auth } = require('./server/config/middleware/auth');
 mongoose.connect(config.mongoURI, {
     /* 
         useNewUrlParser: true,
@@ -97,10 +97,10 @@ app.post('/api/users/login', async (req, res) => {
             user.generateToken((err, user) => {
                 if (err) return res.status(400).send(err);
 
-                // 토근 저장. 어디에? (쿠키가 로컬스토리지나 아무데나) 여기서는 쿠키에 저장
+                // 토큰 저장. 어디에? (쿠키가 로컬스토리지나 아무데나) 여기서는 쿠키에 저장
                 res.cookie('x_auth', user.token)
                     .status(200)
-                    .json({ loginSuccess: true, userId: user.id });
+                    .json({ loginSuccess: true, userId: user._id });
             });
         });
 });
@@ -118,6 +118,18 @@ app.get('/api/users/auth', auth, (req, res) => {
             role: req.user.role,
             image: req.user.image,
 
+        });
+});
+
+app.get('/api/users/logout', auth, (req, res) => {
+    User.findOneAndUpdate({ id: req.user._id }, { token: '' })
+        .then(() => {
+            res.status(200).send({
+                success: true,
+            });
+        })
+        .catch((err) => {
+            console.log('err', err);
         });
 });
 

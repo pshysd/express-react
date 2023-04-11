@@ -1,10 +1,10 @@
-const User = require('../models/User');
+const { User } = require('../../../models/User');
 
 // 인증 처리를 함
 let auth = (req, res, next) => {
 
-    // 클라이언트에서 쿠키를 가져옴
-    let token = cookies.x_auth;
+    // 클라이언트 쿠키에서 토큰을 가져옴
+    let token = req.cookies.x_auth;
     // 토큰을 복호화한 후 유저를 찾음
     User.findByToken(token, (err, user) => {
         if (err) throw err;
@@ -14,9 +14,9 @@ let auth = (req, res, next) => {
         req.user = user;
         next();
     });
-    // 유저가 있으면 true
+    // 유저가 있으면 ok
 
-    // 없으면 false
+    // 없으면 no
 };
 
 module.exports = {
