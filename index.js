@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = 5000;
 const mongoose = require('mongoose');
-const { User } = require('./models/User');
+const { User } = require('./server/models/User');
 const config = require('./server/config/key');
 const cookieParser = require('cookie-parser');
-const { auth } = require('./server/config/middleware/auth');
+const auth = require('./server/middleware/auth');
 mongoose.connect(config.mongoURI, {
     /* 
         useNewUrlParser: true,
@@ -29,6 +29,10 @@ app.use(cookieParser());
 
 app.get('/', (req, res) => {
     res.send('노드몬 사용중');
+});
+
+app.get('/api/hello', (req, res) => {
+    res.send('hellO!');
 });
 
 app.post('/api/users/register', async (req, res) => {
@@ -105,8 +109,7 @@ app.post('/api/users/login', async (req, res) => {
         });
 });
 
-app.get('/api/users/auth', auth, (req, res) => {
-
+app.get('/api/users/auth', auth, async (req, res) => {
     // 여기 도달한다는건 미들웨어 통과했다는 뜻 == authentication == true
     res.status(200)
         .json({
