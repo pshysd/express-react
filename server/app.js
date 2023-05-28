@@ -9,6 +9,8 @@ dotenv.config();
 
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth');
+const apiRouter = require('./routes/api');
+
 const connect = require('./schemas');
 
 const app = express();
@@ -36,6 +38,7 @@ app.use(
 
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
+app.use('/api', apiRouter);
 
 app.use((err, req, res, next) => {
 	res.locals.message = err.message;

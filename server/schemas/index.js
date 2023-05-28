@@ -7,7 +7,7 @@ const connect = () => {
 	}
 
 	mongoose
-		.connect('mongodb://root:root@localhost:27017/admin', {
+		.connect(`mongodb://${process.env.MONGO_ID}:${process.env.MONGO_PASSWORD}@localhost:27017/admin`, {
 			dbName: 'ahnjohn',
 			useNewUrlParser: true,
 		})

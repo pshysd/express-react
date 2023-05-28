@@ -1,5 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import LandingPage from './components/views/LandingPage/LandingPage';
+import LoginPage from './components/views/LoginPage/LoginPage';
+import RegisterPage from './components/views/RegisterPage/RegisterPage';
 
 const App = () => {
 	return (
@@ -20,37 +23,13 @@ const App = () => {
 				<hr />
 
 				<Routes>
-					<Route exact path="/" element={<Home />} />
-					<Route path="/about" element={<About />} />
-					<Route path="/dashboard" element={<Dashboard />} />
+					<Route path="/" element={<LandingPage />} />
+					<Route path="/login" element={<LoginPage />} />
+					<Route path="/register" element={<RegisterPage />} />
 				</Routes>
 			</div>
 		</Router>
 	);
-}
+};
 
 export default App;
-
-const Home = () => {
-	return (
-		<div>
-			<h2>Home</h2>
-		</div>
-	);
-}
-
-const About = () => {
-	return (
-		<div>
-			<h2>About</h2>
-		</div>
-	);
-}
-
-const Dashboard = () => {
-	return (
-		<div>
-			<h2>Dashboard</h2>
-		</div>
-	);
-}
