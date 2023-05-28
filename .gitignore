@@ -1,3 +1,2 @@
-node_modules
-nodeInfo.txt
-dev.js
+node_modules/
+.env
